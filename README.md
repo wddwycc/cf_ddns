@@ -8,18 +8,23 @@ The executable basically does this.
 findMyIP().flatMap { syncCF(ip: $0) }
 ```
 
-Run with env variables
+## How to run
 
-* `ZONE`:  Cloudflare zone
-* `RECORD_TYPE`: DNS record type
-* `RECORD_NAME`: DNS record name
-* `EMAIL`: Cloudflare user email ( For authorization )
-* `API_KEY`: Cloudflare API Key ( For authorization )
-
-Example:
+Build docker image
 
 ```shell
-recordType=A recordName=base.monk-studio.com email=wddwyss@gmail.com apiKey=xx cf_ddns
+docker build . \
+--tag cf_ddns:1.0 \
+--build-arg zone=x \
+--build-arg recordType=A \
+--build-arg recordName=base.monk-studio.com \
+--build-arg email=wddwyss@gmail.com \
+--build-arg apiKey=x \
 ```
 
-Download executable from [release page](https://github.com/wddwycc/cf_ddns/releases)
+Create container and run
+
+```shell
+docker create --name my_ddns cf_ddns:1.0
+docker start -a my_ddns
+```

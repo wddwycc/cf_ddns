@@ -1,6 +1,11 @@
 FROM swift:4.2
 ADD . /code
 WORKDIR /code
-ENV ZONE=
+ARG zone 
+ARG recordType 
+ARG recordName 
+ARG email 
+ARG apiKey
+ENV ZONE=${zone} RECORD_TYPE=${recordType} RECORD_NAME=${recordName} EMAIL=${email} API_KEY=${apiKey}
 RUN swift build -c release
-CMD [".build/release/cf_ddns"]
+ENTRYPOINT .build/release/cf_ddns
