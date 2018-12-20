@@ -10,11 +10,11 @@ import RxSwift
 
 
 struct Config: Codable {
-    let zone: String
-    let recordType: String
-    let recordName: String
-    let email: String
-    let apiKey: String
+    let ZONE: String
+    let RECORD_TYPE: String
+    let RECORD_NAME: String
+    let EMAIL: String
+    let API_KEY: String
 }
 
 fileprivate func fetchConfig() throws -> Config {
@@ -60,12 +60,12 @@ fileprivate func fetchRecord() -> Observable<CFDNSRecord> {
         config = try fetchConfig()
     } catch { return Observable.error(error) }
 
-    let APIEntry = "https://api.cloudflare.com/client/v4/zones/\(config.zone)/dns_records"
-    let prarms = ["name": config.recordName, "type": config.recordType]
+    let APIEntry = "https://api.cloudflare.com/client/v4/zones/\(config.ZONE)/dns_records"
+    let prarms = ["name": config.RECORD_NAME, "type": config.RECORD_TYPE]
     let headers = [
         "Content-Types": "application/json",
-        "X-Auth-Email": config.email,
-        "X-Auth-Key": config.apiKey,
+        "X-Auth-Email": config.EMAIL,
+        "X-Auth-Key": config.API_KEY,
     ]
     let req = genReq(url: APIEntry, params: prarms, headers: headers)
     return sendReq(req, decodeWith: CFResp<[CFDNSRecord]>.self)
@@ -83,11 +83,11 @@ fileprivate func updateRecord(record: CFDNSRecord, ip: String) -> Observable<CFD
         config = try fetchConfig()
     } catch { return Observable.error(error) }
 
-    let APIEntry = "https://api.cloudflare.com/client/v4/zones/\(config.zone)/dns_records"
+    let APIEntry = "https://api.cloudflare.com/client/v4/zones/\(config.ZONE)/dns_records"
     let headers = [
         "Content-Types": "application/json",
-        "X-Auth-Email": config.email,
-        "X-Auth-Key": config.apiKey,
+        "X-Auth-Email": config.EMAIL,
+        "X-Auth-Key": config.API_KEY,
     ]
     let payload = CFDNSUpdatePayload(type: record.type, name: record.name, content: ip)
     let req = genReq("PUT", url: "\(APIEntry)/\(record.id)", params: nil, headers: headers, payload: payload)

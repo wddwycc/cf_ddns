@@ -10,11 +10,11 @@ findMyIP().flatMap { syncCF(ip: $0) }
 
 Run with env variables
 
-* zone: Cloudflare zone
-* recordType: DNS record type
-* recordName: DNS record name
-* email: Cloudflare user email ( For authorization )
-* apiKey: Cloudflare API Key ( For authorization )
+* `ZONE`:  Cloudflare zone
+* `RECORD_TYPE`: DNS record type
+* `RECORD_NAME`: DNS record name
+* `EMAIL`: Cloudflare user email ( For authorization )
+* `API_KEY`: Cloudflare API Key ( For authorization )
 
 Example:
 
