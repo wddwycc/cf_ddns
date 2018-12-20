@@ -1,6 +1,11 @@
 import Foundation
-import RxSwift
+import LoggerAPI
 
+import RxSwift
+import HeliumLogger
+
+
+HeliumLogger.use(.info)
 
 let dispatchGroup = DispatchGroup()
 dispatchGroup.enter()
@@ -8,9 +13,9 @@ dispatchGroup.enter()
 let task = findMyIP()
     .flatMap { syncCF(ip: $0) }
     .subscribe(onNext: { record in
-        print("Sync success, ip now: \(record.content)")
+        Log.info("Sync success, ip now: \(record.content)")
     }, onError: { err in
-        print("Update failed, error: \(err.localizedDescription)")
+        Log.error("Sync failed, error: \(err.localizedDescription)")
         dispatchGroup.leave()
     }, onCompleted: {
         dispatchGroup.leave()
