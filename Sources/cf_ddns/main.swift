@@ -5,23 +5,25 @@ import RxSwift
 import HeliumLogger
 
 
-HeliumLogger.use(.info)
+let logger = HeliumLogger(.info)
+logger.format = "[(%date)] [(%type)] (%msg)"
+Log.logger = logger
 
-let dispatchGroup = DispatchGroup()
-dispatchGroup.enter()
+extension ObservableType {
+    func catchErrorJustPrint() -> Observable<E> {
+        return catchError { err in
+            Log.error("Sync failed, error: \(err.localizedDescription)")
+            return .never()
+        }
+    }
+}
 
-let task = findMyIP()
-    .flatMap { syncCF(ip: $0) }
+let task = Observable<Int>.interval(60, scheduler: MainScheduler.instance)
+    .startWith(0)
+    .flatMapLatest { _ in findMyIP().catchErrorJustPrint() }
+    .flatMap { syncCF(ip: $0).catchErrorJustPrint() }
     .subscribe(onNext: { record in
         Log.info("Sync success, ip now: \(record.content)")
-    }, onError: { err in
-        Log.error("Sync failed, error: \(err.localizedDescription)")
-        dispatchGroup.leave()
-    }, onCompleted: {
-        dispatchGroup.leave()
     })
 
-dispatchGroup.notify(queue: DispatchQueue.main) {
-    exit(EXIT_SUCCESS)
-}
-dispatchMain()
+RunLoop.main.run()
