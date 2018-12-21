@@ -5,9 +5,7 @@ import RxSwift
 import HeliumLogger
 
 
-let logger = HeliumLogger(.info)
-logger.format = "[(%date)] [(%type)] (%msg)"
-Log.logger = logger
+HeliumLogger.use(.info)
 
 extension ObservableType {
     func catchErrorJustPrint() -> Observable<E> {

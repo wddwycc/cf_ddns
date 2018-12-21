@@ -26,5 +26,7 @@ Create container and run
 
 ```shell
 docker create --name my_ddns cf_ddns:1.0
-docker start -a my_ddns
+docker start my_ddns
+# see logs of the started container
+docker logs my_ddns -f
 ```
